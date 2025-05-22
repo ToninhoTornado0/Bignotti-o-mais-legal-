@@ -1,4 +1,4 @@
-const fs = require('fs') 
+const fs = require('fs') ;
 const {uuidv4} = require('uuidv4')
 
 function registrarLog(nomeAluno){
@@ -24,7 +24,27 @@ app.post('/logs', (req,res) =>{
     } 
     const id = registrarLog(nome);
     return res.status(201).json({id,logMensagem: "Log registrado :D"})
-})
+});
+
+//rota para buscar log por ID
+app.get('/logs/:id', (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const conteudo = fs.readFileSync('logs.txt', 'utf-8');
+    const linhas = conteudo.split('\n');
+    const linhaEncontrada = linhas.find(linha => linha.startsWith(id));
+
+    if (linhaEncontrada) {
+      return res.status(200).json({ log: linhaEncontrada });
+    } else {
+      return res.status(404).json({ erro: 'Log não encontrado.' });
+    }
+  } catch (err) {
+    return res.status(500).json({ erro: 'Erro ao ler o arquivo de logs.' });
+  }
+});
+
 const PORT = 8000;
 //Servidor iniciando
 app.listen(PORT, () => {
