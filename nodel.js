@@ -17,6 +17,14 @@ const registrarLog = require('./logs');
 const app = express();
 app.use(express.json());
 
+app.post('/logs', (req,res) =>{
+    const {nome} = req.body;
+    if (!nome) {
+        return res.status(400).json({error: "Obrigatorio Nome do aluno"});
+    } 
+    const id = registrarLog(nome);
+    return res.status(201).json({id,logMensagem: "Log registrado :D"})
+})
 const PORT = 8000;
 //Servidor iniciando
 app.listen(PORT, () => {
